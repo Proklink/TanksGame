@@ -1,18 +1,18 @@
 #include "Tank.h"
 #include "Game.h"
 
-Tank::Tank(const LoaderParams* pParams):SDLGameObject(pParams),
-                                        mTankDir(Direction::UP),
-                                        mTankAngle(0),
-                                        state(State::STOP)
-                                    
-{
- 
-}
+Tank::Tank(const LoaderParams* pParams):
+        SDLGameObject(pParams),
+        mTankDir(Direction::UP),
+        mTankAngle(0),
+        state(State::STOP),
+        speed(0),
+        maxSpeed(300),
+        acceleration(10) {}
 
 Tank::~Tank()
 {
-    for(auto it = vBullets.begin(); it != vBullets.end();)
+    for (auto it = vBullets.begin(); it != vBullets.end();)
     {
         delete (*it);
         it = vBullets.erase(it);
@@ -22,35 +22,35 @@ Tank::~Tank()
 void Tank::change_direction(Direction dir)
 {
     this->mTankDir = dir;
-    this->mTankAngle = 90*dir;
+    this->mTankAngle = 90 * dir;
 }
 
 void Tank::ProcessInput()
 {
     this->setState(State::STOP);
-    if(InputManager::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE))
+    if (InputManager::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE))
     {
      /*TODO: This if place above, in PlayState class
              in order to change in PAUSE state
      */    
     }
-    else if(InputManager::Instance()->isKeyDown(SDL_SCANCODE_W)){
+    else if (InputManager::Instance()->isKeyDown(SDL_SCANCODE_W)) {
         this->setState(State::MOVE);
         this->change_direction(Direction::UP);
     }
-    else if(InputManager::Instance()->isKeyDown(SDL_SCANCODE_S)){
+    else if (InputManager::Instance()->isKeyDown(SDL_SCANCODE_S)) {
         this->setState(State::MOVE);
         this->change_direction(Direction::DOWN);
     }
-    else if(InputManager::Instance()->isKeyDown(SDL_SCANCODE_D)){
+    else if (InputManager::Instance()->isKeyDown(SDL_SCANCODE_D)) {
         this->setState(State::MOVE);
         this->change_direction(Direction::RIGHT);
     }
-    else if(InputManager::Instance()->isKeyDown(SDL_SCANCODE_A)){
+    else if (InputManager::Instance()->isKeyDown(SDL_SCANCODE_A)) {
         this->setState(State::MOVE);
         this->change_direction(Direction::LEFT);
     }
-    if(InputManager::Instance()->isKeyDown(SDL_SCANCODE_SPACE))
+    if (InputManager::Instance()->isKeyDown(SDL_SCANCODE_SPACE))
     {
         this->Fire();
     }
@@ -58,49 +58,49 @@ void Tank::ProcessInput()
 
 void Tank::Update(float deltaTime)
 {
+    speed = speed + acceleration * deltaTime;
+    if (speed > maxSpeed)
+        speed = maxSpeed;
     
-    if(this->state == State::MOVE)
+    if (this->state == State::MOVE)
     {
-        if(this->mTankDir == Direction::UP)
+        if (this->mTankDir == Direction::UP)
         {
-            this->position.setY(this->position.getY() + static_cast<int>(-300.0f * deltaTime));
+            this->position.setY(this->position.getY() + static_cast<int>(-speed * deltaTime));
+            if (this->position.getY() < 0)
+            {
+                this->position.setY(0);
+            }
+            else if (this->position.getY() > (HEIGHT - this->height))
+            {
+                this->position.setY(HEIGHT - this->height);
+            }
+        }
+        else if (this->mTankDir == Direction::DOWN)
+        {
+
+            this->position.setY(this->position.getY() + static_cast<int>(speed * deltaTime));
             if(this->position.getY() < 0)
             {
                 this->position.setY(0);
             }
-            else if (this->position.getY() > (HEIGHT - height))
+            else if (this->position.getY() > (HEIGHT - this->height))
             {
-                this->position.setY(HEIGHT - height);
+                this->position.setY(HEIGHT - this->height);
             }
         }
-        else if(this->mTankDir == Direction::DOWN)
+        else if (mTankDir == Direction::RIGHT)
         {
-
-            this->position.setY(this->position.getY() + static_cast<int>(300.0f * deltaTime));
-            if(this->position.getY() < 0)
-            {
-                this->position.setY(0);
-            }
-            else if (this->position.getY() > (HEIGHT - height))
-            {
-                this->position.setY(HEIGHT - height);
-            }
-        }
-
-        else if(mTankDir == Direction::RIGHT)
-        {
-
-            this->position.setX(this->position.getX() + static_cast<int>( 300.0f * deltaTime));
+            this->position.setX(this->position.getX() + static_cast<int>( speed * deltaTime));
             if (this->position.getX() > (WIDTH - this->width))
             {
                 this->position.setX(WIDTH - this->width);
             }
         }
-        else if(mTankDir == Direction::LEFT)
+        else if (mTankDir == Direction::LEFT)
         {
-        
-            this->position.setX(position.getX() + static_cast<int>(-300.0f * deltaTime));
-            if(this->position.getX() < 0)
+            this->position.setX(position.getX() + static_cast<int>(-speed * deltaTime));
+            if (this->position.getX() < 0)
             {
                 this->position.setX(0);
             }
@@ -110,7 +110,7 @@ void Tank::Update(float deltaTime)
             }
         }
     }
-    for(Bullet* bullet: vBullets)
+    for (Bullet* bullet : vBullets)
         bullet->Update(deltaTime);
 }
 

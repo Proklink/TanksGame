@@ -15,8 +15,6 @@ class SDLGameObject : public GameObject
         virtual void ProcessInput(){};
     protected:
         Vector2D position;
-        /*Vector2D velocity;
-        Vector2D acceleration;*/
         int width;
         int height;
         int currentRow;

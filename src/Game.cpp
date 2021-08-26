@@ -30,25 +30,25 @@ bool Game::Initialize()
     int sdlResult = SDL_Init(SDL_INIT_VIDEO);
     bool ret;
 
-    if(sdlResult != 0)
+    if (sdlResult != 0)
     {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
         return false;
     }
-    mWindow = SDL_CreateWindow("TanksBattle", // Title
-                                SDL_WINDOWPOS_UNDEFINED, // Top left x - coordinate of window
-                                SDL_WINDOWPOS_UNDEFINED, // Top left y - coordinate of window
-                                WIDTH, // Width
-                                HEIGHT, // Height
-                                0 // Flags
-                                );
-    if(!mWindow)
+    mWindow = SDL_CreateWindow("TanksBattle",               // Title
+                                SDL_WINDOWPOS_UNDEFINED,    // Top left x - coordinate of window
+                                SDL_WINDOWPOS_UNDEFINED,    // Top left y - coordinate of window
+                                WIDTH,                      // Width
+                                HEIGHT,                     // Height
+                                0);                         // Flags
+    if (!mWindow)
     {
         SDL_Log("Failed to create window: %s", SDL_GetError());
         return false;        
     }
+
     mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if(!mRenderer)
+    if (!mRenderer)
     {
         SDL_Log("Failed to create render: %s", SDL_GetError());
         return false;        
@@ -57,14 +57,14 @@ bool Game::Initialize()
     {
         //Initialize PNG loading
         int imgFlags = IMG_INIT_PNG;
-        if(!(IMG_Init(imgFlags)&imgFlags))
+
+        if (!(IMG_Init(imgFlags) & imgFlags))
         {
             SDL_Log("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
             return false; 
         }
     }
     gameStateMachine = std::make_unique<GameStateMachine>();
-    
     
     return true;
 }
@@ -77,10 +77,9 @@ void Game::ShutDown()
     SDL_Quit();
 }
 
-
 void Game::RunLoop()
 {
-    while(mIsRunning)
+    while (mIsRunning)
     {
         ProcessInput();
         UpdateGame();
@@ -98,7 +97,8 @@ void Game::UpdateGame()
 {
     while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16));
     float deltaTime = ( SDL_GetTicks() - mTicksCount)/ 1000.0f;
-    if(deltaTime > 0.05f)
+
+    if (deltaTime > 0.05f)
         deltaTime = 0.05f;
     mTicksCount = SDL_GetTicks();
     gameStateMachine->Update(deltaTime);

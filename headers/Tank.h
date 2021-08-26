@@ -25,7 +25,10 @@ class Tank : public SDLGameObject
         double mTankAngle;
         Direction mTankDir;
         State state;
-         
+        Uint8 fireDelay;
+        Uint8 acceleration;
+        float speed;
+        float maxSpeed;
 };
 
 #endif

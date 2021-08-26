@@ -21,7 +21,7 @@ class Game final
         bool Initialize();
         void RunLoop();
         void ShutDown();
-        void Quit(){mIsRunning = false;}
+        void Quit() {mIsRunning = false;}
         SDL_Renderer* GetRenderer() const;
         std::unique_ptr<GameStateMachine>& getStateMachine();
         static std::unique_ptr<Game>& Instance();

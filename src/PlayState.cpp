@@ -27,7 +27,7 @@ void PlayState::Render()
 
 void PlayState::Update(float deltaTime)
 {
-    for(auto it = m_gameObjects.begin(); it != m_gameObjects.end(); ++it)
+    for (auto it = m_gameObjects.begin(); it != m_gameObjects.end(); ++it)
     {
         (*it)->Update(deltaTime);
     }

@@ -9,9 +9,9 @@ void GameStateMachine::setNextState(std::string id)
 
 void GameStateMachine::ProcessInput()
 {
-   if(nextState)
+   if (nextState)
    {
-       if(currentState->onExit())
+       if (currentState->onExit())
        {
            currentState = nextState;
            currentState->onEnter();
